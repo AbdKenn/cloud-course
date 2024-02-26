@@ -1,0 +1,13 @@
+/app/brouillon.py
+.pytest_cache/
+poetry.lock
+/app/src/mass_price_regression/MASS_23_12/OLD_XGBoost_score_health_price_regression__mass.pickle
+/app/tests/old_unit_test_mass_price_regression.json
+/app/invoke.py
+/app/invoke.sh
+/app/deploy.sh
+/app/venv/
+/app/.python-version
+/app/Docker commands
+.idea/
+.DS_Store

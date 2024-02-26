@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Prediction results</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #EBFAFA;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        #json-container {
+            border: 1px solid #3498db;
+            border-radius: 10px;
+            padding: 20px;
+            overflow: auto;
+            max-height: 400px; /* Adjust this height as needed */
+            white-space: pre-wrap;
+            background: linear-gradient(45deg, #3498db, #2ecc71);
+            color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: background 0.3s ease;
+        }
+        #json-container:hover {
+            background: linear-gradient(45deg, #2ecc71, #3498db);
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="json-container">
+        <p>
+            {{ result }}
+        </p>
+    </div>
+</body>
+</html>
