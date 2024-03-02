@@ -11,3 +11,7 @@ poetry.lock
 /app/Docker commands
 .idea/
 .DS_Store
+/ubuntu-22.04.4-desktop-amd64.iso
+personal access token.txt
+
+64bit*
