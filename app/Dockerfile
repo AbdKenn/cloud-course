@@ -1,4 +1,4 @@
-FROM python:3.10
+FROM python:3.9.2
 
 ENV PYTHONUNBUFFERED=TRUE
 ENV path=src/mass_price_regression/MASS_23_12/
