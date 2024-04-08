@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "mass-price-regression"
 version = "0.1.0"
-description = ""
+description = "|"
 authors = ["akennouche <akennouche@meilleurtaux.com>"]
 readme = "README.md"
 
