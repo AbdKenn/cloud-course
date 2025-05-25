@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Price prediction API</title>
+<style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #EBFAFA;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        #logo {
+            width: 500px; /* Ajustez la largeur selon vos besoins */
+            height: auto;
+            margin-bottom: 20px;
+        }
+
+        #searchQuery {
+            width: 600px;
+            padding: 10px;
+            b
+            order: none;
+            border-radius: 5px;
+            outline: none;
+        }
+
+        #search-button {
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+
+        .form-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        /* Optional: Add space between the input and button */
+        #search-button {
+            margin-top: 10px;
+        }
+
+        #search-button:hover {
+            background-color: #0056b3; /* Couleur au survol */
+        }
+
+        #welcome {
+          position: absolute;
+          top: 8px;
+          left: 16px;
+          font-size: 18px;
+        }
+
+        #profile-pic {
+          position: absolute;
+          top: 8px;
+          right: 16px;
+          font-size: 18px;
+        }
+        #name {
+          position: absolute;
+          top: 25px;
+          left: 16px;
+          font-size: 18px;
+        }
+
+        #email {
+          position: absolute;
+          top: 45px;
+          left: 16px;
+          font-size: 18px;
+        }
+
+        #disconnect {
+          position: absolute;
+          top: 85px;
+          left: 16px;
+          font-size: 18px;
+        }
+
+        #searchButton:hover {
+            background-color: #0056b3;
+        }
+
+
+        #searchButton {
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <h1 id="welcome">Price prediction API</h1>
+
+    <form method="POST" action="/" class="form-container">
+        <input type="text" name="opportunityObject" placeholder="The opportunity object in json format" id="oppo-object" />
+        <button type="submit" id="get-score-button">Get score!</button>
+    </form>
+
+
+
+</body>
+</html>
+
+
+
+
+
+

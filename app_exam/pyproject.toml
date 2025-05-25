@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "mass-price-regression"
+version = "0.1.0"
+description = "|"
+authors = ["akennouche <akennouche@meilleurtaux.com>"]
+readme = "README.md"
+
+packages = [
+    { include = "mass_price_regression", from="./src/" },
+    { include = "mass_price_regression/**/*.py", from="./src/" },
+]
+
+[tool.poetry.dependencies]
+python = "3.11.2"
+
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
