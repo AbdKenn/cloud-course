@@ -1,0 +1,4 @@
+FROM mysql:8
+
+ENV MYSQL_ROOT_PASSWORD=rootpass
+ENV MYSQL_DATABASE=appdb

@@ -1,0 +1,8 @@
+# Build image
+docker build -t mysql-image .
+
+# Run image
+docker run -d -p 3306:3306 --name mysql_container mysql-image
+
+# Enter to the container
+docker exec -it <container_name_or_id> /bin/bash
