@@ -1,0 +1,9 @@
+Flask
+Flask-SQLAlchemy
+psycopg2-binary
+redis
+PyJWT
+Werkzeug
+prometheus-flask-exporter
+gunicorn
+flask-cors

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Project Manager</title>
+</head>
+<body>
+  <h1>📋 Project Manager</h1>
+
+  <div style="margin-bottom:20px;">
+    <h2>Register</h2>
+    <input id="reg-username" placeholder="Username">
+    <input id="reg-password" type="password" placeholder="Password">
+    <button onclick="register()">Register</button>
+  </div>
+
+  <div style="margin-bottom:20px;">
+    <h2>Login</h2>
+    <input id="login-username" placeholder="Username">
+    <input id="login-password" type="password" placeholder="Password">
+    <button onclick="login()">Login</button>
+  </div>
+
+  <div style="margin-bottom:20px;">
+    <h2>Add Project</h2>
+    <input id="project-name" placeholder="Project name">
+    <button onclick="addProject()">Add Project</button>
+  </div>
+
+  <div>
+    <h2>Projects</h2>
+    <ul id="projects-list"></ul>
+  </div>
+
+<script>
+let token = null;
+
+// Backend URL (nom du service Docker Compose)
+const BACKEND_URL = "http://localhost:5000";
+
+// ===================== REGISTER =====================
+async function register() {
+  const username = document.getElementById("reg-username").value;
+  const password = document.getElementById("reg-password").value;
+  if (!username || !password) { alert("Enter username and password"); return; }
+
+  try {
+    const res = await fetch(`${BACKEND_URL}/register`, {
+      method: "POST",
+      headers: {"Content-Type":"application/json"},
+      body: JSON.stringify({username, password})
+    });
+    const data = await res.json();
+    alert(data.status || data.error);
+  } catch (err) {
+    console.error(err);
+    alert("Error connecting to backend");
+  }
+}
+
+// ===================== LOGIN =====================
+async function login() {
+  const username = document.getElementById("login-username").value;
+  const password = document.getElementById("login-password").value;
+  if (!username || !password) { alert("Enter username and password"); return; }
+
+  try {
+    const res = await fetch(`${BACKEND_URL}/login`, {
+      method: "POST",
+      headers: {"Content-Type":"application/json"},
+      body: JSON.stringify({username, password})
+    });
+    const data = await res.json();
+    if (data.token) {
+      token = data.token;
+      alert("Login successful!");
+      loadProjects();
+    } else {
+      alert(data.error || "Login failed");
+    }
+  } catch (err) {
+    console.error(err);
+    alert("Error connecting to backend");
+  }
+}
+
+// ===================== LOAD PROJECTS =====================
+async function loadProjects() {
+  if (!token) return;
+  try {
+    const res = await fetch(`${BACKEND_URL}/projects`, {
+      headers: {"Authorization": token}
+    });
+    const projects = await res.json();
+    const list = document.getElementById("projects-list");
+    list.innerHTML = projects.map(p => `<li>${p.name}</li>`).join("");
+  } catch (err) {
+    console.error(err);
+    alert("Error loading projects");
+  }
+}
+
+// ===================== ADD PROJECT =====================
+async function addProject() {
+  if (!token) { alert("Please login first!"); return; }
+  const name = document.getElementById("project-name").value;
+  if (!name) { alert("Enter project name"); return; }
+
+  try {
+    const res = await fetch(`${BACKEND_URL}/projects`, {
+      method: "POST",
+      headers: {"Content-Type":"application/json", "Authorization": token},
+      body: JSON.stringify({name})
+    });
+    const data = await res.json();
+    if (data.status) {
+      loadProjects();
+    } else {
+      alert(data.error || "Error adding project");
+    }
+  } catch (err) {
+    console.error(err);
+    alert("Error connecting to backend");
+  }
+}
+
+// ===================== INITIAL LOAD =====================
+window.onload = () => {
+  if (token) loadProjects();
+};
+</script>
+</body>
+</html>

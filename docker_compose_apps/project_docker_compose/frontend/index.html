@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Project Manager</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Minimal, semantic-friendly CSS -->
+  <style>
+    :root {
+      --bg: #0f172a;
+      --bg-card: #020617;
+      --primary: #3b82f6;
+      --primary-soft: rgba(59, 130, 246, 0.1);
+      --border: #1e293b;
+      --text: #e5e7eb;
+      --muted: #9ca3af;
+      --danger: #ef4444;
+      --radius-lg: 12px;
+      --radius-md: 8px;
+      --shadow-soft: 0 18px 45px rgba(15, 23, 42, 0.6);
+      --transition-fast: 0.18s ease-out;
+      --font: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+        "Segoe UI", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: var(--font);
+      background: radial-gradient(circle at top left, #1d283a 0, #020617 50%, #000 100%);
+      color: var(--text);
+      display: flex;
+      align-items: stretch;
+      justify-content: center;
+      padding: 32px 16px;
+    }
+
+    .app-shell {
+      width: 100%;
+      max-width: 1100px;
+      background: linear-gradient(145deg, rgba(15, 23, 42, 0.96), rgba(15, 23, 42, 0.94));
+      border-radius: 24px;
+      border: 1px solid rgba(148, 163, 184, 0.28);
+      box-shadow: var(--shadow-soft);
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.6fr);
+      overflow: hidden;
+    }
+
+    @media (max-width: 840px) {
+      .app-shell {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .sidebar {
+      padding: 24px 24px 20px;
+      border-right: 1px solid var(--border);
+      background: radial-gradient(circle at top, #1e293b 0, #020617 40%);
+    }
+
+    @media (max-width: 840px) {
+      .sidebar {
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+      }
+    }
+
+    .main {
+      padding: 24px 24px 20px;
+      background: radial-gradient(circle at top right, #0f172a 0, #020617 55%);
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .title {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .title-main {
+      font-size: 24px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .title-pill {
+      font-size: 13px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.45);
+      color: var(--muted);
+      background: radial-gradient(circle at top, rgba(148, 163, 184, 0.08), transparent);
+    }
+
+    .title-sub {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .badge-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: radial-gradient(circle, #4ade80 0, #22c55e 55%, #15803d 100%);
+      box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.4);
+    }
+
+    .user-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: radial-gradient(circle at top left, rgba(15, 23, 42, 0.2), rgba(15, 23, 42, 0.85));
+      border: 1px solid rgba(148, 163, 184, 0.3);
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .user-chip span {
+      max-width: 140px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      color: var(--text);
+    }
+
+    .btn {
+      border: none;
+      border-radius: 999px;
+      padding: 8px 14px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: radial-gradient(circle at top left, #3b82f6, #1d4ed8);
+      color: white;
+      box-shadow: 0 10px 35px rgba(37, 99, 235, 0.45);
+      transition: transform var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast), opacity 0.12s ease-out;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 14px 40px rgba(37, 99, 235, 0.65);
+      background: radial-gradient(circle at top left, #60a5fa, #1d4ed8);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+      box-shadow: 0 8px 25px rgba(37, 99, 235, 0.55);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--muted);
+      box-shadow: none;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+    }
+
+    .btn-outline:hover {
+      background: radial-gradient(circle at top, rgba(148, 163, 184, 0.18), rgba(15, 23, 42, 0.9));
+      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.5);
+      color: var(--text);
+    }
+
+    .btn-sm {
+      padding: 5px 10px;
+      font-size: 12px;
+    }
+
+    .auth-toggle {
+      display: inline-flex;
+      align-items: center;
+      margin-bottom: 16px;
+      padding: 3px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid rgba(148, 163, 184, 0.35);
+    }
+
+    .auth-toggle button {
+      flex: 1;
+      border-radius: 999px;
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      font-size: 13px;
+      padding: 6px 12px;
+      cursor: pointer;
+      transition: background 0.16s ease-out, color 0.16s ease-out;
+    }
+
+    .auth-toggle button.active {
+      background: radial-gradient(circle at top, rgba(59, 130, 246, 0.26), rgba(15, 23, 42, 0.75));
+      color: var(--text);
+    }
+
+    .auth-card {
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(148, 163, 184, 0.3);
+      background: radial-gradient(circle at top left, rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0.97));
+      padding: 18px 18px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      backdrop-filter: blur(20px);
+    }
+
+    .auth-card h2 {
+      font-size: 16px;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .auth-card p {
+      margin: 0;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .fields {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 6px;
+      margin-bottom: 4px;
+    }
+
+    label {
+      font-size: 13px;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    label span.label-hint {
+      font-size: 11px;
+      color: rgba(148, 163, 184, 0.85);
+    }
+
+    input {
+      width: 100%;
+      padding: 8px 9px;
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(51, 65, 85, 0.9);
+      background: rgba(15, 23, 42, 0.9);
+      color: var(--text);
+      font-size: 14px;
+      transition: border-color var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast), transform 0.08s ease-out;
+      outline: none;
+    }
+
+    input::placeholder {
+      color: rgba(148, 163, 184, 0.7);
+    }
+
+    input:focus {
+      border-color: rgba(59, 130, 246, 0.9);
+      box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.6), 0 0 0 10px rgba(37, 99, 235, 0.12);
+      background: rgba(15, 23, 42, 0.98);
+      transform: translateY(-0.5px);
+    }
+
+    .auth-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 4px;
+    }
+
+    .auth-footer span {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .status {
+      font-size: 12px;
+      margin-top: 10px;
+      min-height: 18px;
+      color: var(--muted);
+    }
+
+    .status.error {
+      color: var(--danger);
+    }
+
+    .status.success {
+      color: #4ade80;
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .section-title h2 {
+      font-size: 16px;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .section-title span.badge {
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      color: var(--muted);
+      background: rgba(15, 23, 42, 0.95);
+    }
+
+    .project-card {
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(51, 65, 85, 0.9);
+      background: radial-gradient(circle at top left, rgba(15, 23, 42, 0.96), rgba(15, 23, 42, 0.98));
+      padding: 16px 18px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      min-height: 150px;
+    }
+
+    .project-form {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 6px;
+      flex-wrap: wrap;
+    }
+
+    .project-form input {
+      flex: 1;
+      min-width: 140px;
+    }
+
+    .projects-empty {
+      font-size: 13px;
+      color: var(--muted);
+      padding: 10px;
+      border-radius: var(--radius-md);
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px dashed rgba(51, 65, 85, 0.9);
+      text-align: center;
+    }
+
+    ul.projects-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      max-height: 260px;
+      overflow-y: auto;
+    }
+
+    .project-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 8px 10px;
+      border-radius: 10px;
+      border: 1px solid rgba(51, 65, 85, 0.95);
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.94), rgba(15, 23, 42, 0.98));
+      font-size: 14px;
+      transition: background var(--transition-fast), transform var(--transition-fast), border-color var(--transition-fast), box-shadow 0.18s ease-out;
+    }
+
+    .project-item:hover {
+      transform: translateY(-1px);
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.98), rgba(15, 23, 42, 1));
+      border-color: rgba(59, 130, 246, 0.65);
+      box-shadow: 0 12px 35px rgba(15, 23, 42, 0.8);
+    }
+
+    .project-main {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 0;
+    }
+
+    .project-name {
+      font-weight: 500;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+
+    .project-meta {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .pill {
+      font-size: 11px;
+      padding: 2px 6px;
+      border-radius: 999px;
+      background: rgba(37, 99, 235, 0.2);
+      border: 1px solid rgba(59, 130, 246, 0.5);
+      color: rgba(191, 219, 254, 0.95);
+    }
+
+    .project-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .btn-ghost {
+      border-radius: 999px;
+      border: 1px solid rgba(51, 65, 85, 0.95);
+      background: rgba(15, 23, 42, 0.95);
+      color: var(--muted);
+      padding: 4px 8px;
+      font-size: 11px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast), transform 0.08s ease-out;
+    }
+
+    .btn-ghost:hover {
+      background: rgba(15, 23, 42, 1);
+      border-color: rgba(148, 163, 184, 0.9);
+      color: var(--text);
+      transform: translateY(-0.5px);
+    }
+
+    .tag {
+      font-size: 11px;
+      padding: 2px 6px;
+      border-radius: 999px;
+      border: 1px solid rgba(55, 65, 81, 0.8);
+      color: rgba(156, 163, 175, 0.95);
+      background: rgba(15, 23, 42, 0.9);
+    }
+
+    .toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 6px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .toolbar span {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: #4ade80;
+    }
+
+    .muted-link {
+      border: none;
+      padding: 0;
+      margin: 0;
+      background: none;
+      color: rgba(148, 163, 184, 0.9);
+      text-decoration: underline;
+      text-underline-offset: 2px;
+      font-size: 11px;
+      cursor: pointer;
+    }
+
+    .muted-link:hover {
+      color: var(--text);
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <!-- LEFT: Auth -->
+    <aside class="sidebar">
+      <header class="header">
+        <div class="title">
+          <div class="title-main">
+            <span>📋 Project Manager</span>
+            <span class="title-pill">JWT + Flask demo</span>
+          </div>
+          <p class="title-sub">
+            Simple backend-driven project list with token-based access.
+          </p>
+        </div>
+        <div id="user-chip" class="user-chip" style="display:none;">
+          <div class="badge-dot"></div>
+          <span id="user-label"></span>
+          <button class="btn-outline btn-sm" id="logout-btn">Logout</button>
+        </div>
+      </header>
+
+      <div class="auth-toggle">
+        <button id="tab-login" class="active" type="button">Login</button>
+        <button id="tab-register" type="button">Register</button>
+      </div>
+
+      <section class="auth-card" id="login-card">
+        <div>
+          <h2>Sign in</h2>
+          <p>Use an existing account to access your projects.</p>
+        </div>
+        <div class="fields">
+          <label for="login-username">
+            Username
+          </label>
+          <input id="login-username" placeholder="your.name" autocomplete="username" />
+          <label for="login-password">
+            Password
+            <span class="label-hint">Min 4 characters recommended</span>
+          </label>
+          <input id="login-password" type="password" placeholder="••••••••" autocomplete="current-password" />
+        </div>
+        <div class="auth-footer">
+          <button class="btn" id="login-btn" type="button">Login</button>
+          <span>
+            New here?
+            <button class="muted-link" type="button" id="go-register">
+              Create an account
+            </button>
+          </span>
+        </div>
+        <div id="login-status" class="status"></div>
+      </section>
+
+      <section class="auth-card" id="register-card" style="display:none;">
+        <div>
+          <h2>Create account</h2>
+          <p>Register a new user to start adding projects.</p>
+        </div>
+        <div class="fields">
+          <label for="reg-username">
+            Username
+          </label>
+          <input id="reg-username" placeholder="pick-a-username" autocomplete="username" />
+          <label for="reg-password">
+            Password
+            <span class="label-hint">Stored as a secure hash</span>
+          </label>
+          <input id="reg-password" type="password" placeholder="••••••••" autocomplete="new-password" />
+        </div>
+        <div class="auth-footer">
+          <button class="btn" id="register-btn" type="button">Register</button>
+          <span>
+            Already registered?
+            <button class="muted-link" type="button" id="go-login">
+              Go to login
+            </button>
+          </span>
+        </div>
+        <div id="register-status" class="status"></div>
+      </section>
+    </aside>
+
+    <!-- RIGHT: Projects -->
+    <main class="main">
+      <div class="section-title">
+        <div>
+          <h2>Projects</h2>
+          <p class="title-sub" id="projects-subtitle">
+            Login to view or create projects in the database.
+          </p>
+        </div>
+        <span class="badge" id="projects-badge">0 items</span>
+      </div>
+
+      <section class="project-card">
+        <form class="project-form" id="project-form">
+          <input
+            id="project-name"
+            placeholder="New project name"
+            autocomplete="off"
+          />
+          <button class="btn" type="submit">
+            <span>+ Add project</span>
+          </button>
+        </form>
+
+        <button class="btn-ghost" type="button" onclick="triggerProcess()">
+            Run heavy job
+        </button>
+
+        <div id="projects-list-wrapper">
+          <div class="projects-empty" id="projects-empty">
+            No projects yet. Add one to get started.
+          </div>
+          <ul id="projects-list" class="projects-list"></ul>
+        </div>
+
+        <div class="toolbar">
+          <span>
+            <span class="dot"></span>
+            <span id="connection-status">Disconnected</span>
+          </span>
+          <span>
+            Cache via Redis · DB via PostgreSQL · Metrics via Prometheus
+          </span>
+        </div>
+
+        <div id="projects-status" class="status"></div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    // Backend URL (Docker service / local)
+    const BACKEND_URL = "http://localhost:5000";
+
+    let token = null;
+    let currentUser = null;
+
+    // Elements
+    const loginCard = document.getElementById("login-card");
+    const registerCard = document.getElementById("register-card");
+    const tabLogin = document.getElementById("tab-login");
+    const tabRegister = document.getElementById("tab-register");
+    const goRegister = document.getElementById("go-register");
+    const goLogin = document.getElementById("go-login");
+
+    const loginStatus = document.getElementById("login-status");
+    const registerStatus = document.getElementById("register-status");
+    const projectsStatus = document.getElementById("projects-status");
+    const projectsBadge = document.getElementById("projects-badge");
+    const projectsSubtitle = document.getElementById("projects-subtitle");
+    const connectionStatus = document.getElementById("connection-status");
+
+    const userChip = document.getElementById("user-chip");
+    const userLabel = document.getElementById("user-label");
+    const logoutBtn = document.getElementById("logout-btn");
+
+    const loginBtn = document.getElementById("login-btn");
+    const registerBtn = document.getElementById("register-btn");
+    const projectForm = document.getElementById("project-form");
+
+    const loginUsername = document.getElementById("login-username");
+    const loginPassword = document.getElementById("login-password");
+    const regUsername = document.getElementById("reg-username");
+    const regPassword = document.getElementById("reg-password");
+    const projectNameInput = document.getElementById("project-name");
+    const projectsList = document.getElementById("projects-list");
+    const projectsEmpty = document.getElementById("projects-empty");
+
+    // UI helpers
+    function setStatus(el, message, type = "") {
+      if (!el) return;
+      el.textContent = message || "";
+      el.classList.remove("error", "success");
+      if (type) el.classList.add(type);
+    }
+
+    function switchAuthTab(mode) {
+      const loginMode = mode === "login";
+      tabLogin.classList.toggle("active", loginMode);
+      tabRegister.classList.toggle("active", !loginMode);
+      loginCard.style.display = loginMode ? "flex" : "none";
+      registerCard.style.display = loginMode ? "none" : "flex";
+      setStatus(loginStatus, "");
+      setStatus(registerStatus, "");
+    }
+
+    function updateAuthUI() {
+      if (token && currentUser) {
+        userChip.style.display = "inline-flex";
+        userLabel.textContent = currentUser;
+        projectsSubtitle.textContent = "Your projects loaded from the backend.";
+        connectionStatus.textContent = "Authenticated";
+      } else {
+        userChip.style.display = "none";
+        projectsSubtitle.textContent = "Login to view or create projects in the database.";
+        connectionStatus.textContent = "Disconnected";
+      }
+    }
+
+    function saveSession() {
+      if (token && currentUser) {
+        localStorage.setItem(
+          "session",
+          JSON.stringify({ token, user: currentUser })
+        );
+      } else {
+        localStorage.removeItem("session");
+      }
+    }
+
+    function restoreSession() {
+      try {
+        const stored = localStorage.getItem("session");
+        if (!stored) return;
+        const { token: savedToken, user } = JSON.parse(stored);
+        if (savedToken && user) {
+          token = savedToken;
+          currentUser = user;
+          updateAuthUI();
+          loadProjects();
+        }
+      } catch (e) {
+        console.error("Error restoring session", e);
+      }
+    }
+
+    // API helpers
+    async function apiFetch(path, options = {}) {
+      const headers = Object.assign(
+        { "Content-Type": "application/json" },
+        options.headers || {}
+      );
+      if (token) {
+        headers["Authorization"] = token;
+      }
+
+      const res = await fetch(`${BACKEND_URL}${path}`, {
+        ...options,
+        headers,
+      });
+
+      let data;
+      try {
+        data = await res.json();
+      } catch {
+        data = null;
+      }
+      if (!res.ok) {
+        const msg = data && data.error ? data.error : `Request failed (${res.status})`;
+        throw new Error(msg);
+      }
+      return data;
+    }
+
+    // Auth flows
+    async function handleRegister() {
+      const username = regUsername.value.trim();
+      const password = regPassword.value;
+      setStatus(registerStatus, "");
+      if (!username || !password) {
+        setStatus(registerStatus, "Enter username and password.", "error");
+        return;
+      }
+      try {
+        registerBtn.disabled = true;
+        registerBtn.textContent = "Registering…";
+        const data = await apiFetch("/register", {
+          method: "POST",
+          body: JSON.stringify({ username, password }),
+        });
+        setStatus(registerStatus, data.status || "User created.", "success");
+        // Auto-fill login form for convenience
+        loginUsername.value = username;
+        loginPassword.value = password;
+        switchAuthTab("login");
+      } catch (err) {
+        console.error(err);
+        setStatus(registerStatus, err.message || "Registration failed.", "error");
+      } finally {
+        registerBtn.disabled = false;
+        registerBtn.textContent = "Register";
+      }
+    }
+
+    async function handleLogin() {
+      const username = loginUsername.value.trim();
+      const password = loginPassword.value;
+      setStatus(loginStatus, "");
+      if (!username || !password) {
+        setStatus(loginStatus, "Enter username and password.", "error");
+        return;
+      }
+      try {
+        loginBtn.disabled = true;
+        loginBtn.textContent = "Logging in…";
+        const data = await apiFetch("/login", {
+          method: "POST",
+          body: JSON.stringify({ username, password }),
+        });
+        if (data.token) {
+          token = data.token;
+          currentUser = username;
+          saveSession();
+          updateAuthUI();
+          setStatus(loginStatus, "Login successful.", "success");
+          loadProjects();
+        } else {
+          setStatus(loginStatus, data.error || "Login failed.", "error");
+        }
+      } catch (err) {
+        console.error(err);
+        setStatus(loginStatus, err.message || "Login failed.", "error");
+      } finally {
+        loginBtn.disabled = false;
+        loginBtn.textContent = "Login";
+      }
+    }
+
+    function handleLogout() {
+      token = null;
+      currentUser = null;
+      saveSession();
+      updateAuthUI();
+      projectsList.innerHTML = "";
+      projectsBadge.textContent = "0 items";
+      projectsEmpty.style.display = "block";
+      setStatus(projectsStatus, "Logged out.", "success");
+    }
+
+    // Projects
+    async function loadProjects() {
+      if (!token) {
+        setStatus(projectsStatus, "Please login first to load projects.", "error");
+        return;
+      }
+      setStatus(projectsStatus, "Loading projects…");
+      try {
+        const projects = await apiFetch("/projects", { method: "GET" });
+        renderProjects(projects || []);
+        setStatus(projectsStatus, "", "");
+      } catch (err) {
+        console.error(err);
+        setStatus(projectsStatus, err.message || "Error loading projects.", "error");
+      }
+    }
+
+    function renderProjects(projects) {
+      projectsList.innerHTML = "";
+      if (!projects || projects.length === 0) {
+        projectsEmpty.style.display = "block";
+        projectsBadge.textContent = "0 items";
+        return;
+      }
+      projectsEmpty.style.display = "none";
+      projectsBadge.textContent =
+        projects.length === 1 ? "1 item" : `${projects.length} items`;
+
+      projects.forEach((p, idx) => {
+        const li = document.createElement("li");
+        li.className = "project-item";
+
+        const main = document.createElement("div");
+        main.className = "project-main";
+
+        const nameEl = document.createElement("div");
+        nameEl.className = "project-name";
+        nameEl.textContent = p.name;
+
+        const meta = document.createElement("div");
+        meta.className = "project-meta";
+        meta.innerHTML = `
+          <span class="pill">#${p.id}</span>
+          <span>·</span>
+          <span>Row ${idx + 1}</span>
+        `;
+
+        main.appendChild(nameEl);
+        main.appendChild(meta);
+
+        const actions = document.createElement("div");
+        actions.className = "project-actions";
+
+        const copyBtn = document.createElement("button");
+        copyBtn.type = "button";
+        copyBtn.className = "btn-ghost";
+        copyBtn.textContent = "Copy name";
+        copyBtn.onclick = () => {
+          navigator.clipboard?.writeText(p.name).catch(() => {});
+        };
+
+        const tag = document.createElement("span");
+        tag.className = "tag";
+        tag.textContent = "DB · cached";
+
+        actions.appendChild(copyBtn);
+        actions.appendChild(tag);
+
+        li.appendChild(main);
+        li.appendChild(actions);
+        projectsList.appendChild(li);
+      });
+    }
+
+    async function handleAddProject(event) {
+      event.preventDefault();
+      setStatus(projectsStatus, "");
+      if (!token) {
+        setStatus(projectsStatus, "Please login first to add projects.", "error");
+        return;
+      }
+      const name = projectNameInput.value.trim();
+      if (!name) {
+        setStatus(projectsStatus, "Enter a project name.", "error");
+        return;
+      }
+      try {
+        projectNameInput.disabled = true;
+        const previousText = event.submitter ? event.submitter.textContent : null;
+        if (event.submitter) event.submitter.textContent = "Adding…";
+        const data = await apiFetch("/projects", {
+          method: "POST",
+          body: JSON.stringify({ name }),
+        });
+        if (data.status) {
+          projectNameInput.value = "";
+          setStatus(projectsStatus, "Project created.", "success");
+          await loadProjects();
+        } else {
+          setStatus(projectsStatus, data.error || "Error adding project.", "error");
+        }
+        if (event.submitter && previousText) {
+          event.submitter.textContent = previousText;
+        }
+      } catch (err) {
+        console.error(err);
+        setStatus(projectsStatus, err.message || "Error adding project.", "error");
+      } finally {
+        projectNameInput.disabled = false;
+      }
+    }
+
+    // handle worker process
+    async function triggerProcess() {
+        if (!token) { 
+            setStatus(projectsStatus, "Please login first.", "error"); 
+            return; 
+        }
+        try {
+            setStatus(projectsStatus, "Sending background task…");
+            const data = await apiFetch("/process", { method: "POST" });
+            setStatus(projectsStatus, data.status || "Task sent.", "success");
+        } catch (err) {
+            setStatus(projectsStatus, err.message || "Error sending task.", "error");
+        }
+        }
+
+    // Events
+    tabLogin.addEventListener("click", () => switchAuthTab("login"));
+    tabRegister.addEventListener("click", () => switchAuthTab("register"));
+    goRegister.addEventListener("click", () => switchAuthTab("register"));
+    goLogin.addEventListener("click", () => switchAuthTab("login"));
+
+    loginBtn.addEventListener("click", handleLogin);
+    registerBtn.addEventListener("click", handleRegister);
+    logoutBtn.addEventListener("click", handleLogout);
+
+    projectForm.addEventListener("submit", handleAddProject);
+
+    loginPassword.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        handleLogin();
+      }
+    });
+
+    regPassword.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        handleRegister();
+      }
+    });
+
+    // Initial load
+    window.addEventListener("load", () => {
+      restoreSession();
+      updateAuthUI();
+    });
+  </script>
+</body>
+</html>
