@@ -10,6 +10,7 @@ dependencies = [
     "loguru==0.6.0",
     "scikit-learn",
     "xgboost==1.6.1",
+    "setuptools<81",
     "streamlit==1.32.2",
     "altair==4.*",
     "flask>=3.0.0,<4",
@@ -17,6 +18,9 @@ dependencies = [
     "gunicorn>=21.2.0,<22",
     "google-cloud-bigquery>=3.14.1,<4",
 ]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/mass_price_regression"]
 
 [build-system]
 requires = ["hatchling"]
