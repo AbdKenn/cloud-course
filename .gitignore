@@ -15,3 +15,11 @@ poetry.lock
 personal access token.txt
 
 64bit*
+
+Exam/
+emile/
+venv/
+Vms/
+new_venv/
+
+docker_apps/node_js_webapp/**
