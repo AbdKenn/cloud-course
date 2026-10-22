@@ -9,5 +9,13 @@ docker run -d \
   -v "D:\The Abd\Pro\Cours\cloud-course\docker_apps\nginex_webapp\website:/usr/share/nginx/html:ro" \
   nginx:abd
 
+# run with a database volume
+docker run -d \
+  --name mysql-container \
+  -p 3306:3306 \
+  -v "/Users/Abderahmane.KENNOUCHE/Projects/Perso/Cours/UPEC - Cloud/docker_apps/mysql-database/mysql-data-volume:/var/lib/mysql" \
+  mysql-custom-image
+
 # Enter to the container
 docker exec -it <container_name_or_id> /bin/bash
+

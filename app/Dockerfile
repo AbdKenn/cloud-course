@@ -1,4 +1,4 @@
-FROM python:3.9.2
+FROM python:3.11.2
 
 ENV PYTHONUNBUFFERED=TRUE
 ENV path=src/mass_price_regression/MASS_23_12/
@@ -12,7 +12,7 @@ RUN pip install --upgrade pip
 RUN pip install poetry
 RUN poetry config virtualenvs.create false
 RUN poetry config virtualenvs.in-project false
-RUN poetry install
+RUN poetry install --no-root
 
 EXPOSE 8080
 

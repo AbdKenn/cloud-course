@@ -1,0 +1,17 @@
+
+1/ Install the OS Dependencies
+- Git, Python, Python3 venv
+
+2/ Get the application code from the Github Repository
+- The repo : www.github.com/AbdKenn/cloud-course
+
+3/ Install the python dependencies using poetry 
+and the pyproject.toml file
+
+4/ Locate & Run the main.py in the application folder 
+using Streamlit
+
+5/ Open a Browser (if you OS has a graphical interface),
+type http://localhost:3501
+You should see the web app and perform 
+a prediction without any issue

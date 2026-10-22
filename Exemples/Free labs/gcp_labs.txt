@@ -1,0 +1,18 @@
+# Tensorflow labs
+https://www.cloudskillsboost.google/course_templates/646/labs/455572
+
+# Tensorflow free labs
+https://www.cloudskillsboost.google/course_templates/646/labs/455572
+
+
+# Core infrastructure : paid course : but can look at questions (same in PDF): 
+https://www.cloudskillsboost.google/course_templates/60/labs/460836?locale=en
+
+# BigQuery soccer paid : 
+https://www.cloudskillsboost.google/focuses/23118?catalog_rank=%7B%22rank%22%3A5%2C%22num_filters%22%3A1%2C%22has_search%22%3Afalse%7D&locale=en&parent=catalog
+
+# Pub sub free lab : 
+https://www.cloudskillsboost.google/focuses/925?catalog_rank=%7B%22rank%22%3A16%2C%22num_filters%22%3A1%2C%22has_search%22%3Afalse%7D&locale=en&parent=catalog
+
+# BigQuery NCAA DATA free lab :
+https://www.cloudskillsboost.google/focuses/624?catalog_rank=%7B%22rank%22%3A21%2C%22num_filters%22%3A1%2C%22has_search%22%3Afalse%7D&locale=en&parent=catalog
