@@ -1,20 +1,15 @@
-[tool.poetry]
+[project]
 name = "mass-price-regression"
 version = "0.1.0"
 description = "|"
-authors = ["akennouche <akennouche@meilleurtaux.com>"]
+authors = [{ name = "akennouche", email = "akennouche@meilleurtaux.com" }]
 readme = "README.md"
+requires-python = ">=3.11,<3.12"
+dependencies = []
 
-packages = [
-    { include = "mass_price_regression", from="./src/" },
-    { include = "mass_price_regression/**/*.py", from="./src/" },
-]
-
-[tool.poetry.dependencies]
-python = "3.11.2"
-
-
+[tool.hatch.build.targets.wheel]
+packages = ["src/iam_a_folder"]
 
 [build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
