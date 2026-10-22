@@ -4,7 +4,7 @@ version = "0.1.0"
 description = "|"
 authors = [{ name = "akennouche", email = "akennouche@meilleurtaux.com" }]
 readme = "README.md"
-requires-python = "==3.11.2"
+requires-python = ">=3.11,<3.12"
 dependencies = [
     "pandas",
     "loguru==0.6.0",
